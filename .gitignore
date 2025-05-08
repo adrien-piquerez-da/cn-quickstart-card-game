@@ -3,6 +3,9 @@
 **/bin/
 !src/**/build/
 
+# node
+node_modules
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -25,9 +28,13 @@ gradle-app.setting
 # User-specific stuff
 .idea
 .env.local
+.vscode
+.metals
+.bsp
 
-# daml sdk
+# daml
 .sdk/
+.daml
 
 # backups
 *.bak
