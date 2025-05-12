@@ -82,15 +82,15 @@ build: $(FIRST_RUN_DEPENDENCY) build-frontend build-backend build-daml build-doc
 
 .PHONY: build-frontend
 build-frontend: ## Build the frontend application
-	cd frontend && npm install && npm run build
+	cd license-app/frontend && npm install && npm run build
 
 .PHONY: build-backend
 build-backend: ## Build the backend service
-	./gradlew :backend:build
+	./gradlew :license-app:backend:build
 
 .PHONY: build-daml
 build-daml: ## Build the Daml model
-	./gradlew :daml:build distTar
+	./gradlew :license-app:daml:build distTar
 
 .PHONY: build-docker-images
 build-docker-images:
@@ -227,7 +227,7 @@ clean-all: clean clean-docker ## Stop and remove all build artifacts, Docker con
 
 .PHONY: install-daml-sdk
 install-daml-sdk: ## Install the Daml SDK
-	./gradlew :daml:installDamlSdk
+	./gradlew :license-app:daml:installDamlSdk
 
 .PHONY: fetch-grafana-dashboards
 fetch-grafana-dashboards: ## Download Grafana dashboards
@@ -252,7 +252,7 @@ help: ## Show this help message
 
 .PHONY: update-env-sdk-runtime-version
 update-env-sdk-runtime-version: ## Helper to update DAML_RUNTIME_VERSION in .env based on daml/daml.yaml sdk-version
-	DAML_SDK_VERSION=$$(grep '^sdk-version:' daml/licensing/daml.yaml | awk '{print $$2}'); \
+	DAML_SDK_VERSION=$$(grep '^sdk-version:' license-app/daml/licensing/daml.yaml | awk '{print $$2}'); \
 	VERSION=$$(docker run --rm digitalasset/daml-sdk:$$DAML_SDK_VERSION bash -c 'cat /home/daml/.daml/sdk/*/sdk-config.yaml' | grep 'version:' | awk '{print $$2}'); \
 	sed -i.bak 's/^DAML_RUNTIME_VERSION=.*/DAML_RUNTIME_VERSION='"$$VERSION/" .env; \
 	echo "Updated DAML_RUNTIME_VERSION to $$VERSION"

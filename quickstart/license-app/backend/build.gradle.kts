@@ -86,7 +86,7 @@ openApiGenerate {
     additionalProperties = mapOf("useSpringBoot3" to "true")
     generateApiTests = false
     generateModelTests = false
-    inputSpec = "$rootDir/common/openapi.yaml"
+    inputSpec = "$rootDir/license-app/common/openapi.yaml"
     outputDir = "$projectDir/build/generated-spring"
     apiPackage = "com.digitalasset.quickstart.api"
 }
@@ -129,7 +129,7 @@ sourceSets {
 }
 
 tasks.getByName("compileJava").dependsOn(
-    ":daml:build",
+    ":license-app:daml:build",
     "openApiGenerate",
     "openApiGenerateClient"
 )

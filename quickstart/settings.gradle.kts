@@ -14,4 +14,4 @@ plugins {
 }
 
 rootProject.name = "quickstart"
-include("backend", "daml")
+include("license-app:daml", "license-app:backend")

@@ -15,6 +15,7 @@ buildscript {
 plugins {
     id("base")
     id("de.undercouch.download") version "5.6.0"
+    id("distribution")
 }
 
 tasks.register<Exec>("compileDaml") {
@@ -23,7 +24,7 @@ tasks.register<Exec>("compileDaml") {
 
 tasks.register<com.digitalasset.transcode.codegen.java.gradle.JavaCodegenTask>("codeGen") {
     dar.from("$projectDir/licensing/.daml/dist/quickstart-licensing-0.0.1.dar")
-    destination = file("$rootDir/backend/build/generated-daml-bindings")
+    destination = file("$rootDir/license-app/backend/build/generated-daml-bindings")
     dependsOn("compileDaml")
 }
 
