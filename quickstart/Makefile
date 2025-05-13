@@ -91,6 +91,7 @@ build-backend: ## Build the backend service
 .PHONY: build-daml
 build-daml: ## Build the Daml model
 	./gradlew :license-app:daml:build distTar
+	./gradlew :card-game:daml:build distTar
 
 .PHONY: build-docker-images
 build-docker-images:
@@ -228,6 +229,7 @@ clean-all: clean clean-docker ## Stop and remove all build artifacts, Docker con
 .PHONY: install-daml-sdk
 install-daml-sdk: ## Install the Daml SDK
 	./gradlew :license-app:daml:installDamlSdk
+	./gradlew :card-game:daml:installDamlSdk
 
 .PHONY: fetch-grafana-dashboards
 fetch-grafana-dashboards: ## Download Grafana dashboards

@@ -1,0 +1,129 @@
+{-# LANGUAGE ApplicativeDo #-}
+
+module CardGame where
+
+import DA.Action (foldlA)
+import DA.List
+import DA.Random
+import DA.Random.Types
+
+
+data Rank = 
+  As | Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten | Jack | Queen | King
+  deriving (Enum, Eq, Ord, Show)
+
+data Suit =
+  Club | Spade | Heart | Diamond
+  deriving (Enum, Eq, Ord, Show)
+
+data Card = Card
+  with
+    rank : Rank
+    suit : Suit
+  deriving (Eq, Ord, Show)
+
+allCards = [Card { rank, suit } | suit <- [Club .. Diamond], rank <- [As .. King]]
+
+shuffle seed [] = (seed, [])
+shuffle seed [card] = (seed, [card])
+shuffle seed cards =
+  let
+    bound = (length cards) - 1
+    (Minstd seed1, i) = minstd_rand bound (minstd_init seed)
+    (init, head :: tail0) = splitAt i cards
+    (seed2, tail) = shuffle seed1 (init ++ tail0)
+  in (seed2, head :: tail)
+
+template GameLobby
+  with
+    gamemaster : Party
+    players : [Party]
+    invitees : [Party]
+  where
+    signatory gamemaster, players
+    observer invitees
+
+    ensure 
+      (dedup players) == players
+      && (dedup invitees) == invitees
+      && (invitees \\ players) == invitees
+
+    choice JoinGame : ContractId GameLobby
+      with player : Party
+      controller player
+      do
+        create this with
+          players = player :: players
+          invitees = delete player invitees
+    
+    choice StartGame : (ContractId Deck, ContractId Discard)
+      with seed : Int
+      controller gamemaster
+      do
+        let (seed1, cards) = shuffle seed allCards
+        deck0 <- create Deck with
+          gamemaster
+          players
+          cards = tail cards
+        deck1 <- foldlA (\deck player -> exercise deck $ DrawCard player) deck0 (players >>= replicate 5)
+        discard <- create Discard with
+          gamemaster
+          players
+          cards = [head cards]
+        return (deck1, discard)
+
+template Deck
+  with
+    gamemaster : Party
+    players : [Party]
+    cards : [Card]
+  where
+    signatory gamemaster, players
+
+    key gamemaster : Party
+    maintainer key
+
+    choice DrawCard : ContractId Deck
+      with player : Party
+      controller player
+      do
+        create CardInHand with
+          gamemaster = gamemaster
+          player = player
+          card = head cards
+        create this with
+          cards = tail cards
+
+template Discard
+  with
+    gamemaster : Party
+    players : [Party]
+    cards : [Card]
+  where
+    signatory gamemaster, players
+
+    key gamemaster : Party
+    maintainer key
+
+    choice PutCard : ContractId Discard
+      with cardInHand : CardInHand
+      controller gamemaster, cardInHand.player
+      do
+        let topCard = head cards
+        let card = cardInHand.card
+        assertMsg ("Cannot play " <> show card <> " on " <>  show topCard) $ card.rank == topCard.rank || card.suit == topCard.suit
+        create this { cards = card :: cards }
+
+template CardInHand
+  with
+    gamemaster : Party
+    player : Party
+    card : Card
+  where
+    signatory gamemaster, player
+
+    choice PlayCard : ContractId Discard
+      controller player
+      do
+        (discard, _) <- fetchByKey @Discard gamemaster 
+        exercise discard $ PutCard this
