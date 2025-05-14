@@ -31,7 +31,7 @@ const App: React.FC = () => {
             <Route path="/" element={<HomeView />} />
             <Route path="/tenants" element={<TenantRegistrationView />} />
             <Route path="/login" element={<LoginView />} />
-            <Route path="/app-installs" element={<GameLobbiesView />} />
+            <Route path="/game-lobbies" element={<GameLobbiesView />} />
           </Routes>
         </main>
         <ToastNotification />

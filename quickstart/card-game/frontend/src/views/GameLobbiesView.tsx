@@ -32,7 +32,7 @@ const GameLobbiesView: React.FC = () => {
         a GameLobby
       </div>
       <div className="mt-4">
-        <table className="table table-fixed" id="app-installs-table">
+        <table className="table table-fixed" id="game-lobbies-table">
           <thead>
             <tr>
               <th style={{ width: "150px" }}>Contract ID</th>

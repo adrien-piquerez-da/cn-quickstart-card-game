@@ -15,7 +15,6 @@ import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 
 import org.openapitools.model.GameLobby;
-import org.openapitools.model.GameLobbyJoin;
 import org.openapitools.model.GameLobbyStart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

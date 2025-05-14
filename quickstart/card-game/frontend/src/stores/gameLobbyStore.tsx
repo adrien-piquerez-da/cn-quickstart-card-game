@@ -39,7 +39,7 @@ export const GameLobbyProvider = ({ children }: { children: React.ReactNode }) =
 
             setGameLobbies(lobbies);
         } catch (error) {
-            toast.displayError('Error fetching AppInstall data');
+            toast.displayError('Error fetching game lobbies');
         }
     }, [toast]);
 
@@ -71,9 +71,9 @@ export const GameLobbyProvider = ({ children }: { children: React.ReactNode }) =
                     { seed } as GameLobbyStart
                 );
                 await fetchAll();
-                toast.displaySuccess(`Rejected AppInstallRequest ${contractId}`);
+                toast.displaySuccess(`Game started ${contractId}`);
             } catch (error) {
-                toast.displayError('Error rejecting AppInstallRequest');
+                toast.displayError('Error starting Game');
             }
         },
         [toast, fetchAll]
