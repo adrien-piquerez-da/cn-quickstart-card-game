@@ -1,0 +1,297 @@
+openapi: 3.0.0
+info:
+  title: Backend API
+  description: API to manage AppInstalls and Licenses
+  version: 1.0.0
+
+paths:
+  /login-links:
+    get:
+      summary: Get list of links that initiate login
+      operationId: listLinks
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LoginLink'
+        '400':
+          description: Invalid input
+
+  /user:
+    get:
+      summary: Get Authenticated User
+      operationId: getAuthenticatedUser
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatedUser'
+        '401':
+          description: Not authenticated
+
+  /admin/tenant-registrations:
+    post:
+      summary: Create Tenant Registration
+      operationId: createTenantRegistration
+      requestBody:
+        description: Tenant Registration object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantRegistrationRequest'
+      responses:
+        '200':
+          description: Registration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantRegistration'
+        '400':
+          description: Invalid input
+
+    get:
+      summary: List all Tenant Registrations
+      operationId: listTenantRegistrations
+      responses:
+        '200':
+          description: A list of Tenant Registrations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TenantRegistration'
+        '400':
+          description: Invalid request
+
+  /admin/tenant-registrations/{tenantId}:
+    delete:
+      summary: Delete Tenant Registration
+      operationId: deleteTenantRegistration
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The tenant ID of the registration to delete
+      responses:
+        '200':
+          description: Tenant Registration deleted
+        '400':
+          description: Invalid tenant ID
+        '404':
+          description: Tenant Registration not found
+
+  /game-lobby:
+    get:
+      summary: List all GameLobbies
+      operationId: listGameLobbies
+      responses:
+        '200':
+          description: A list of GameLobbies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GameLobby'
+        '400':
+          description: Invalid input
+
+  /game-lobby/{contractId}/join:
+    post:
+      summary: Join a GameLobby
+      operationId: joinGameLobby
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The contract ID of the GameLobby to join
+        - name: commandId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The command ID for the ledger transaction
+      requestBody:
+        description: Acceptance parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameLobbyJoin'
+      responses:
+        '200':
+          description: GameLobby joined
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameLobby'
+        '400':
+          description: Invalid input
+
+  /game-lobby/{contractId}/start:
+    post:
+      summary: Start the Game
+      operationId: startGame
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The contract ID of the GameLobby to start
+        - name: commandId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The command ID for the ledger transaction
+      requestBody:
+        description: Game start parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameLobbyStart'
+      responses:
+        '200':
+          description: Game started
+        '400':
+          description: Invalid input
+
+components:
+  schemas:
+    TenantRegistrationRequest:
+      type: object
+      required:
+        - tenantId
+        - partyId
+        - walletUrl
+        - clientId
+        - issuerUrl
+      properties:
+        tenantId:
+          type: string
+        partyId:
+          type: string
+        walletUrl:
+          type: string
+        clientId:
+          type: string
+        issuerUrl:
+          type: string
+        internal:
+          type: boolean
+
+    TenantRegistration:
+      type: object
+      required:
+        - tenantId
+        - partyId
+        - walletUrl
+        - clientId
+        - issuerUrl
+        - internal
+      properties:
+        tenantId:
+          type: string
+          description: Tenant identifier
+        partyId:
+          type: string
+          description: Party identifier
+        walletUrl:
+          type: string
+          description: Wallet URL for payment redirects
+          format: uri
+        clientId:
+          type: string
+          description: OAuth2 client identifier
+        issuerUrl:
+          type: string
+          description: Issuer URL
+          format: uri
+        internal:
+          type: boolean
+          description: Internal registration
+
+    AuthenticatedUser:
+      type: object
+      required:
+        - name
+        - party
+        - roles
+        - isAdmin
+        - walletUrl
+      properties:
+        name:
+          type: string
+        party:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        isAdmin:
+          type: boolean
+        walletUrl:
+          type: string
+
+    LoginLink:
+      type: object
+      required:
+        - name
+        - url
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+
+    GameLobby:
+      type: object
+      required:
+        - contractId
+        - gamemaster
+        - players
+        - invitees
+      properties:
+        contractId:
+          type: string
+        gamemaster:
+          type: string
+        players:
+          type: array
+          items:
+            type: string
+        invitees:
+          type: array
+          items:
+            type: string
+
+    GameLobbyJoin:
+      type: object
+      required:
+        - player
+      properties:
+        player:
+          type: string
+
+    GameLobbyStart:
+      type: object
+      required:
+        - seed
+      properties:
+        seed:
+          type: integer
+          format: int64

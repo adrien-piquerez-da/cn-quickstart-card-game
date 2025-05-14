@@ -86,30 +86,10 @@ openApiGenerate {
     additionalProperties = mapOf("useSpringBoot3" to "true")
     generateApiTests = false
     generateModelTests = false
-    inputSpec = "$rootDir/license-app/common/openapi.yaml"
+    inputSpec = "$rootDir/card-game/common/openapi.yaml"
     outputDir = "$projectDir/build/generated-spring"
     apiPackage = "com.digitalasset.quickstart.api"
 }
-
-// task to generate client-side bindings for scan-proxy
-tasks.register<GenerateTask>("openApiGenerateClient") {
-    generatorName.set("java")
-    inputSpec.set("$projectDir/src/main/resources/vendored/scan-proxy-openapi.yaml")
-    outputDir.set("$buildDir/generated-client")
-    apiPackage.set("com.digitalasset.quickstart.validatorproxy.client.api")
-    modelPackage.set("com.digitalasset.quickstart.validatorproxy.client.model")
-    configOptions.set(
-        mapOf(
-            "library" to "native",
-            "dateLibrary" to "java8",
-            "asyncNative" to "true",
-            "jsonLibrary" to "jackson"
-        )
-    )
-    generateApiTests.set(false)
-    generateModelTests.set(false)
-}
-
 
 sourceSets {
     main {
@@ -129,9 +109,8 @@ sourceSets {
 }
 
 tasks.getByName("compileJava").dependsOn(
-    ":license-app:daml:build",
+    ":card-game:daml:build",
     "openApiGenerate",
-    "openApiGenerateClient"
 )
 
 protobuf {

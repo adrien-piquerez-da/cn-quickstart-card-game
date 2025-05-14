@@ -87,6 +87,7 @@ build-frontend: ## Build the frontend application
 .PHONY: build-backend
 build-backend: ## Build the backend service
 	./gradlew :license-app:backend:build
+	./gradlew :card-game:backend:build
 
 .PHONY: build-daml
 build-daml: ## Build the Daml model
