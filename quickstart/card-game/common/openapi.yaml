@@ -123,13 +123,6 @@ paths:
           schema:
             type: string
           description: The command ID for the ledger transaction
-      requestBody:
-        description: Acceptance parameters
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GameLobbyJoin'
       responses:
         '200':
           description: GameLobby joined
@@ -278,14 +271,6 @@ components:
           type: array
           items:
             type: string
-
-    GameLobbyJoin:
-      type: object
-      required:
-        - player
-      properties:
-        player:
-          type: string
 
     GameLobbyStart:
       type: object

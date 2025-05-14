@@ -57,8 +57,7 @@ public class GameLobbyApiImpl implements GameLobbyApi {
     @WithSpan
     public CompletableFuture<ResponseEntity<GameLobby>> joinGameLobby(
         @SpanAttribute("joinGameLobby.contractId") String contractId,
-        @SpanAttribute("joinGameLobby.commandId") String commandId,
-        GameLobbyJoin gameLobbyJoin
+        @SpanAttribute("joinGameLobby.commandId") String commandId
     ) {
         Span span = Span.current();
         Context parentContext = Context.current();
@@ -79,7 +78,7 @@ public class GameLobbyApiImpl implements GameLobbyApi {
                 damlRepository.findGameLobbyById(contractId)
                     .thenCompose(contract -> {
                         span.addEvent("Fetched contract, joining game lobby");
-                        var choice = new card_game.cardgame.GameLobby.JoinGame(new Party(gameLobbyJoin.getPlayer()));
+                        var choice = new card_game.cardgame.GameLobby.JoinGame(new Party(providerParty));
                         return ledger.exerciseAndGetResult(providerParty, contract.contractId, choice, commandId);
                     })
             )

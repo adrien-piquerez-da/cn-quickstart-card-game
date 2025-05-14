@@ -1,0 +1,19 @@
+/* Copyright (c) 2025, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved. */
+/* SPDX-License-Identifier: 0BSD */
+
+.table.table-fixed {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.ellipsis-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.table.nowrap td,
+.table.nowrap th {
+  white-space: nowrap;
+}
