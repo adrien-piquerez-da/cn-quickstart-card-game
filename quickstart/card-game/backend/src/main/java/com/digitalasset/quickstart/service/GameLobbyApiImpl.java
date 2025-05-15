@@ -134,13 +134,12 @@ public class GameLobbyApiImpl implements GameLobbyApi {
                                 return gamemaster.equals(party) || invitees.contains(party) || players.contains(party);
                             })
                             .map(contract -> {
-                                GameLobby appInstallRequest = new GameLobby();
                                 var gameLobby = new GameLobby();
                                 gameLobby.setContractId(contract.contractId.getContractId);
                                 gameLobby.setGamemaster(contract.payload.getGamemaster.getParty);
                                 gameLobby.setInvitees(contract.payload.getInvitees.stream().map(p -> p.getParty).collect(Collectors.toList()));
                                 gameLobby.setPlayers(contract.payload.getPlayers.stream().map(p -> p.getParty).collect(Collectors.toList()));
-                                return appInstallRequest;
+                                return gameLobby;
                             })
                             .toList();
                         return ResponseEntity.ok(result);
