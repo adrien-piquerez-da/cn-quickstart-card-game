@@ -28,12 +28,12 @@ draw_cards = script do
   submitMustFail bob do exerciseCmd deck (DrawCard alice)
   submit bob do exerciseCmd deck (DrawCard bob)
 
-play_cards = script do
-  gamemaster <- allocateParty "gamemaster"
-  alice <- allocateParty "alice"
-  bob <- allocateParty "bob"
-  _ <- createGame gamemaster [alice, bob]
-  queenOfHeart <- queryCardInHand bob Card { rank = Queen, suit = Heart }
-  submitMustFail bob do exerciseCmd queenOfHeart PlayCard
-  sixOfDiamond <- queryCardInHand bob Card { rank = Six, suit = Diamond }
-  submit bob do exerciseCmd sixOfDiamond PlayCard
+-- play_cards = script do
+--   gamemaster <- allocateParty "gamemaster"
+--   alice <- allocateParty "alice"
+--   bob <- allocateParty "bob"
+--   _ <- createGame gamemaster [alice, bob]
+--   queenOfHeart <- queryCardInHand bob Card { rank = Queen, suit = Heart }
+--   submitMustFail bob do exerciseCmd queenOfHeart PlayCard
+--   sixOfDiamond <- queryCardInHand bob Card { rank = Six, suit = Diamond }
+--   submit bob do exerciseCmd sixOfDiamond PlayCard

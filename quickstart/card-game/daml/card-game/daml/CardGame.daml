@@ -80,8 +80,8 @@ template Deck
   where
     signatory gamemaster, players
 
-    key gamemaster : Party
-    maintainer key
+    -- key gamemaster : Party
+    -- maintainer key
 
     choice DrawCard : ContractId Deck
       with player : Party
@@ -102,8 +102,8 @@ template Discard
   where
     signatory gamemaster, players
 
-    key gamemaster : Party
-    maintainer key
+    -- key gamemaster : Party
+    -- maintainer key
 
     choice PutCard : ContractId Discard
       with cardInHand : CardInHand
@@ -122,8 +122,8 @@ template CardInHand
   where
     signatory gamemaster, player
 
-    choice PlayCard : ContractId Discard
-      controller player
-      do
-        (discard, _) <- fetchByKey @Discard gamemaster 
-        exercise discard $ PutCard this
+    -- choice PlayCard : ContractId Discard
+    --   controller player
+    --   do
+    --     (discard, _) <- fetchByKey @Discard gamemaster 
+    --     exercise discard $ PutCard this
