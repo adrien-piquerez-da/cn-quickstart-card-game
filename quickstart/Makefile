@@ -100,6 +100,10 @@ build-docker-images:
 create-app-install-request: ## Submit an App Install Request from the App User participant node
 	docker compose -f docker/app-user-shell/compose.yaml $(DOCKER_COMPOSE_ENVFILE) run --rm create-app-install-request || true
 
+.PHONY: create-game-lobby
+create-game-lobby: ## Submit a GameLobby from the Game master participant node
+  docker compose -f docker/app-provider-shell/compose.yaml $(DOCKER_COMPOSE_ENVFILE) run --rm create-game-lobby || true
+
 .PHONY: restart-backend
 restart-backend: build-backend ## Build and start the application
 	$(call docker-compose, restart backend-service)
