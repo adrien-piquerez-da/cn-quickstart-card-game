@@ -21,7 +21,7 @@ endif
 
 # Determine the operating system
 KERNEL_NAME := $(shell uname -s)
-DOCKER_COMPOSE_ENVFILE := --env-file .env.local --env-file .env --env-file env/ports.env
+DOCKER_COMPOSE_ENVFILE := --env-file .env --env-file .env.local --env-file env/ports.env
 DOCKER_COMPOSE_FILES ?= -f compose.yaml
 
 # Default to adding resource constraints for Quickstart compose stack.
@@ -82,17 +82,15 @@ build: $(FIRST_RUN_DEPENDENCY) build-frontend build-backend build-daml build-doc
 
 .PHONY: build-frontend
 build-frontend: ## Build the frontend application
-	cd license-app/frontend && npm install && npm run build
+	cd $(APP_NAME)/frontend && npm install && npm run build
 
 .PHONY: build-backend
 build-backend: ## Build the backend service
-	./gradlew :license-app:backend:build
-	./gradlew :card-game:backend:build
+	./gradlew :$(APP_NAME):backend:build
 
 .PHONY: build-daml
 build-daml: ## Build the Daml model
-	./gradlew :license-app:daml:build distTar
-	./gradlew :card-game:daml:build distTar
+	./gradlew :$(APP_NAME):daml:build distTar
 
 .PHONY: build-docker-images
 build-docker-images:
@@ -188,7 +186,7 @@ integration-test/node_modules:
 # Console
 .PHONY: console-app-provider
 console-app-provider: ## Start the Canton console
-	docker compose -f docker/canton-console/compose.yaml $(DOCKER_COMPOSE_ENVFILE) run --rm canton-console-app-provider
+	docker compose -f docker/canton-console/compose.yaml $(DOCKER_COMPOSE_ENVFILE) --env-file env/app-provider.env run --rm canton-console-app-provider
 
 .PHONY: clean-console-app-provider
 clean-console-app-provider: ## Stop and remove the Canton console container
@@ -196,7 +194,7 @@ clean-console-app-provider: ## Stop and remove the Canton console container
 
 .PHONY: console-app-user
 console-app-user: ## Start the Canton console
-	docker compose -f docker/canton-console/compose.yaml $(DOCKER_COMPOSE_ENVFILE) run --rm canton-console-app-user
+	docker compose -f docker/canton-console/compose.yaml $(DOCKER_COMPOSE_ENVFILE) --env-file env/app-user.env run --rm canton-console-app-user
 
 .PHONY: clean-console-app-user
 clean-console-app-user: ## Stop and remove the Canton console container
@@ -229,8 +227,7 @@ clean-all: clean clean-docker ## Stop and remove all build artifacts, Docker con
 
 .PHONY: install-daml-sdk
 install-daml-sdk: ## Install the Daml SDK
-	./gradlew :license-app:daml:installDamlSdk
-	./gradlew :card-game:daml:installDamlSdk
+	./gradlew :$(APP_NAME):daml:installDamlSdk
 
 .PHONY: fetch-grafana-dashboards
 fetch-grafana-dashboards: ## Download Grafana dashboards

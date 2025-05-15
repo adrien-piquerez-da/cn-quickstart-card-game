@@ -140,7 +140,7 @@ services:
       - ./env/ports.env
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./license-app/frontend/dist/:/usr/share/nginx/html
+      - ./${APP_NAME}/frontend/dist/:/usr/share/nginx/html
       - ./config/nginx/frontend.conf:/etc/nginx/templates/default.conf.template
       - ./config/nginx/common-backend-proxy-settings.conf:/etc/nginx/templates/common-backend-proxy-settings.conf.template
       - ./config/nginx/app-provider.conf:/etc/nginx/templates/app-provider.conf.template
@@ -277,7 +277,7 @@ services:
       - ./docker/splice-auto-config/app-user.sh:/app/app-user.sh
       - ./docker/utils.sh:/app/utils.sh
       - ./license-app/daml/licensing/.daml/dist/quickstart-licensing-0.0.1.dar:/canton/dars/quickstart-licensing-0.0.1.dar
-      - ./license-app/daml/assets/.daml/dist/quickstart-assets-0.0.1.dar:/canton/dars/quickstart-assets-0.0.1.dar
+      - ./card-game/daml/card-game/.daml/dist/card-game-0.0.1.dar:/canton/dars/card-game-0.0.1.dar
     healthcheck:
       test: ["CMD", "bash", "/app/health-check.sh"]
       interval: 5s
@@ -373,8 +373,8 @@ services:
       OTEL_EXPORTER_OTLP_PROTOCOL: grpc
       JAVA_OPTS: "-javaagent:/otel-agent.jar -Dotel.instrumentation.logback-appender.experimental-log-attributes=true -Dotel.instrumentation.logback-appender.experimental.capture-key-value-pair-attributes=true"
     volumes:
-      - ./license-app/backend/build/distributions/backend.tar:/backend.tar
-      - ./license-app/backend/build/otel-agent/opentelemetry-javaagent-${OTEL_AGENT_VERSION}.jar:/otel-agent.jar
+      - ./${APP_NAME}/backend/build/distributions/backend.tar:/backend.tar
+      - ./${APP_NAME}/backend/build/otel-agent/opentelemetry-javaagent-${OTEL_AGENT_VERSION}.jar:/otel-agent.jar
       - ./docker/utils.sh:/app/utils.sh
       - ./docker/backend-service/start.sh:/app/start.sh
     command: /app/start.sh
